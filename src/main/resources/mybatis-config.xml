@@ -1,10 +1,30 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-config.dtd">
 <configuration>
+
+    <!-- 전역 설정 -->
+    <settings>
+        <!-- DB 컬럼의 스네이크 케이스(예: post_id)를 Java 객체의 카멜 케이스(예: postId)로 자동 매핑합니다. -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 쿼리 파라미터에 NULL이 전달될 경우, JDBC 타입을 명시하지 않아도 동작하도록 설정합니다. -->
+        <setting name="jdbcTypeForNull" value="NULL"/>
+    </settings>
+
+    <!--
+      타입 별칭(Type Aliases) 설정.
+      Mapper XML에서 긴 패키지 경로 대신 짧은 별칭을 사용할 수 있게 합니다.
+      예: com.clone.dcinside.domain.post.Post -> Post
+    -->
     <typeAliases>
-        <!--클래스 alias가 들어갈 공간-->
-        <typeAlias type="com.highgarden.springboot_board.controller.IndexController" alias="IndexController"></typeAlias>
-        <!--indexController예시-->
+        <package name="com.clone.dcinside.domain"/>
     </typeAliases>
+
+    <!--
+      주의사항 (Spring Boot 연동 시):
+      1. <environments>: 데이터소스(DataSource) 설정은 application.yml에서 Spring Boot가 관리하므로 여기에 작성하지 않습니다.
+      2. <mappers>: Mapper 파일의 위치 또한 application.yml의 'mybatis.mapper-locations' 속성으로 관리되므로, 여기에 개별적으로 등록할 필요가 없습니다.
+    -->
+
 </configuration>
