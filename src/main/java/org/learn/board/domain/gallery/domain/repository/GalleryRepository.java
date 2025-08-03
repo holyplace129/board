@@ -8,4 +8,5 @@ import java.util.Optional;
 
 public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
+    Optional<Gallery> findByName(String name);
 }
