@@ -1,26 +1,42 @@
 package org.learn.board.domain.post.domain;
 
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.learn.board.global.domain.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostReport {
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_post_report", columnNames = {"post_id", "reporterIp"})
+})
+@Entity
+public class PostReport extends BaseTimeEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long postId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
+    @Column(length = 45, nullable = false)
     private String reporterIp;
-    private String reasonCode; // "SPAM", "ABUSE", "PORNOGRAPHY"
+
+    @Column(length = 30, nullable = false)
+    private String reasonCode;
+
+    @Lob
     private String reasonDetail;
-    private LocalDateTime createdAt;
 
     @Builder
-    public PostReport(Long postId, String reporterIp, String reasonCode, String reasonDetail) {
-        this.postId = postId;
+    public PostReport(Post post, String reporterIp, String reasonCode, String reasonDetail) {
+        this.post = post;
         this.reporterIp = reporterIp;
         this.reasonCode = reasonCode;
         this.reasonDetail = reasonDetail;

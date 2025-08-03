@@ -1,31 +1,51 @@
 package org.learn.board.domain.comment.domain;
 
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import org.learn.board.domain.post.domain.Post;
+import org.learn.board.global.domain.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Comment {
+@NoArgsConstructor
+@Entity
+public class Comment extends BaseTimeEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long postId;
-    private Long parentId;
-    private String content;
-    private String writer;
-    private String password;
-    private int likeCount;
-    private int reportCount;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
 
-    @Builder
-    public Comment(Long postId, Long parentId, String content, String writer, String password) {
-        this.postId = postId;
-        this.parentId = parentId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "parent_id")
+    private Comment parent;
+
+    @Column(length = 1000, nullable = false)
+    private String content;
+
+    @Column(length = 30, columnDefinition = "ㅇㅇ", nullable = false)
+    private String writer;
+
+    @Column(nullable = false)
+    private String password;
+
+    @ColumnDefault("0")
+    private int likeCount;
+
+    @ColumnDefault("0")
+    private int reportCount;
+
+    public Comment(Post post, Comment parent, String content, String writer, String password, int likeCount, int reportCount) {
+        this.post = post;
+        this.parent = parent;
         this.content = content;
         this.writer = writer;
         this.password = password;
@@ -35,5 +55,13 @@ public class Comment {
 
     public void update(String content) {
         this.content = content;
+    }
+
+    public void increaseLikeCount() {
+        this.likeCount++;
+    }
+
+    public void increaseReportCount() {
+        this.reportCount++;
     }
 }

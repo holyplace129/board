@@ -1,26 +1,42 @@
 package org.learn.board.domain.comment.domain;
 
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.learn.board.global.domain.BaseTimeEntity;
 
 import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentReport {
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_post_report", columnNames = {"post_id", "reporterIp"})
+})
+@Entity
+public class CommentReport extends BaseTimeEntity {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private Long commentId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id", nullable = false)
+    private Comment comment;
+
+    @Column(length = 45, nullable = false)
     private String reporterIp;
+
+    @Column(length = 30, nullable = false)
     private String reasonCode;
+
+    @Lob
     private String reasonDetail;
-    private LocalDateTime createdAt;
 
     @Builder
-    public CommentReport(Long commentId, String reporterIp, String reasonCode, String reasonDetail) {
-        this.commentId = commentId;
+    public CommentReport(Comment comment, String reporterIp, String reasonCode, String reasonDetail) {
+        this.comment = comment;
         this.reporterIp = reporterIp;
         this.reasonCode = reasonCode;
         this.reasonDetail = reasonDetail;
