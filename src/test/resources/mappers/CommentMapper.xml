@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.learn.board.domain.comment.infrastructure.CommentMapper">
+
+    <!-- 댓글 생성 -->
+    <insert id="save" parameterType="Comment" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO comment (post_id, parent_id, content, writer, password)
+        VALUES (#{postId}, #{parentId}, #{content}, #{writer}, #{password})
+    </insert>
+
+    <!-- 댓글 수정 -->
+    <update id="update" parameterType="Comment">
+        UPDATE comment
+        SET
+            content = #{content},
+            updated_at = NOW()
+        WHERE id = #{id}
+    </update>
+
+    <!-- 댓글 삭제 (Hard delete) -->
+    <delete id="deleteById">
+        DELETE FROM comment WHERE id = #{id}
+    </delete>
+
+    <!-- 댓글 단건 조회 -->
+    <select id="findById" resultType="Comment">
+        SELECT id, post_id, parent_id, content, writer, like_count, report_count, created_at, updated_at
+        FROM comment
+        WHERE id = #{id}
+    </select>
+
+    <!-- 댓글 비밀번호 조회 -->
+    <select id="findPasswordById" resultType="string">
+        SELECT password FROM comment WHERE id = #{id}
+    </select>
+
+    <!-- 특정 게시글의 모든 댓글 조회 -->
+    <!-- 대댓글 구조를 위해 parent_id, created_at 순으로 정렬 -->
+    <select id="findByPostId" resultType="Comment">
+        SELECT id, post_id, parent_id, content, writer, like_count, report_count, created_at, updated_at
+        FROM comment
+        WHERE post_id = #{postId}
+        ORDER BY
+            -- 부모 댓글(parent_id is null)을 먼저, 그 다음 parent_id 순으로 정렬
+            CASE WHEN parent_id IS NULL THEN id ELSE parent_id END,
+            -- 같은 그룹 내에서는 생성 시간 순으로 정렬
+            created_at
+    </select>
+
+</mapper>

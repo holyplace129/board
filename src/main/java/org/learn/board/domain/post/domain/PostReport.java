@@ -1,4 +1,4 @@
-package org.learn.board.Report.domain;
+package org.learn.board.domain.post.domain;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -9,18 +9,18 @@ import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class CommentReport {
+public class PostReport {
 
     private Long id;
-    private Long commentId;
+    private Long postId;
     private String reporterIp;
-    private String reasonCode;
+    private String reasonCode; // "SPAM", "ABUSE", "PORNOGRAPHY"
     private String reasonDetail;
     private LocalDateTime createdAt;
 
     @Builder
-    public CommentReport(Long commentId, String reporterIp, String reasonCode, String reasonDetail) {
-        this.commentId = commentId;
+    public PostReport(Long postId, String reporterIp, String reasonCode, String reasonDetail) {
+        this.postId = postId;
         this.reporterIp = reporterIp;
         this.reasonCode = reasonCode;
         this.reasonDetail = reasonDetail;

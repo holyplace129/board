@@ -98,13 +98,4 @@
         UPDATE post SET view_count = view_count + 1 WHERE id = #{id}
     </update>
 
-    <!-- 신고 관련 쿼리 추가 -->
-    <insert id="saveReport" parameterType="PostReport">
-        INSERT INTO post_report ...
-    </insert>
-
-    <select id="findReportByPostIdAndReporterIp" resultType="PostReport">
-        SELECT ... FROM post_report ...
-    </select>
-
 </mapper>

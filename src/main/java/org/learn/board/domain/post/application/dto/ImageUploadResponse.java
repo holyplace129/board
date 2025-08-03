@@ -1,4 +1,4 @@
-package org.learn.board.image;
+package org.learn.board.domain.post.application.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
