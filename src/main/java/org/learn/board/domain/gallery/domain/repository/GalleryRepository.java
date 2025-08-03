@@ -1,9 +1,12 @@
-package org.learn.board.domain.gallery.domain;
+package org.learn.board.domain.gallery.domain.repository;
+
+import org.learn.board.domain.gallery.domain.Gallery;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface GalleryRepository {
+public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
     Gallery save(Gallery gallery);
 

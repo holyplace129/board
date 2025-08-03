@@ -1,13 +1,12 @@
-package org.learn.board.domain.post.domain;
+package org.learn.board.domain.vote.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.learn.board.domain.post.domain.Post;
 import org.learn.board.global.domain.BaseTimeEntity;
-
-import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
