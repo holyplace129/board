@@ -19,33 +19,39 @@ public class GalleryController {
 
     private final GalleryFacade galleryFacade;
 
+    // 갤러리 생성
     @PostMapping
     public ResponseEntity<GalleryResponse> createGallery(@Valid @RequestBody GalleryCreateRequest request) {
         GalleryResponse response = galleryFacade.createGallery(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    // 갤러리 목록 조회
     @GetMapping
-    public ResponseEntity<List<GalleryResponse>> findAllGalleries() {
-        List<GalleryResponse> responses = galleryFacade.findAllGalleries();
-        return ResponseEntity.ok(responses);
+    public ResponseEntity<List<GalleryResponse>> findByAllGalleries() {
+        List<GalleryResponse> response = galleryFacade.findAllGalleries();
+        return ResponseEntity.ok(response);
     }
 
+    // 갤러리 상세 조회
     @GetMapping("/{name}")
     public ResponseEntity<GalleryResponse> findGalleryByName(@PathVariable String name) {
         GalleryResponse response = galleryFacade.findGalleryByName(name);
         return ResponseEntity.ok(response);
     }
 
+    // 갤러리 수정
     @PutMapping("/{name}")
     public ResponseEntity<Void> updateGallery(@PathVariable String name, @Valid @RequestBody GalleryUpdateRequest request) {
         galleryFacade.updateGallery(name, request);
         return ResponseEntity.ok().build();
     }
 
+    // 갤러리 삭제
     @DeleteMapping("/{name}")
     public ResponseEntity<Void> deleteGallery(@PathVariable String name) {
         galleryFacade.deleteGallery(name);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok().build();
     }
+
 }
