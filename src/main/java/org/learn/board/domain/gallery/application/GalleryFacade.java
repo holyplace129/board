@@ -43,14 +43,28 @@ public class GalleryFacade {
     }
 
     // 갤러리 상세 조회
-
+    public GalleryResponse findGalleryByName(String name) {
+        Gallery gallery = galleryRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 갤러리입니다."));
+        return toResponse(gallery);
+    }
 
     // 갤러리 수정
+    public void updateGallery(String name, GalleryUpdateRequest request) {
+        Gallery gallery = galleryRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 갤러리입니다."));
+
+        gallery.update(request.getDisplayName(), request.getDescription());
+    }
 
 
     // 갤러리 삭제
+    public void deleteGallery(String name) {
+        Gallery gallery = galleryRepository.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 갤러리입니다."));
 
-
+        galleryRepository.delete(gallery);
+    }
 
 
     private GalleryResponse toResponse(Gallery gallery) {
