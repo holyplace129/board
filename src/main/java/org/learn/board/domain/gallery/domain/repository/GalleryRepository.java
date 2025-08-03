@@ -8,15 +8,4 @@ import java.util.Optional;
 
 public interface GalleryRepository extends JpaRepository<Gallery, Long> {
 
-    Gallery save(Gallery gallery);
-
-    Optional<Gallery> findById(Long id);
-
-    Optional<Gallery> findByName(String name);
-
-    List<Gallery> findAll();
-
-    void update(Gallery gallery);
-
-    void deleteById(Long id);
 }

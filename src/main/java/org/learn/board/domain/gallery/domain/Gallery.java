@@ -1,13 +1,14 @@
 package org.learn.board.domain.gallery.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.learn.board.global.domain.BaseTimeEntity;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Gallery extends BaseTimeEntity {
 

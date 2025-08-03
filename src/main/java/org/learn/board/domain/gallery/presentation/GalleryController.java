@@ -17,35 +17,4 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GalleryController {
 
-    private final GalleryFacade galleryFacade;
-
-    @PostMapping
-    public ResponseEntity<GalleryResponse> createGallery(@Valid @RequestBody GalleryCreateRequest request) {
-        GalleryResponse response = galleryFacade.createGallery(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<GalleryResponse>> findAllGalleries() {
-        List<GalleryResponse> responses = galleryFacade.findAllGalleries();
-        return ResponseEntity.ok(responses);
-    }
-
-    @GetMapping("/{name}")
-    public ResponseEntity<GalleryResponse> findGalleryByName(@PathVariable String name) {
-        GalleryResponse response = galleryFacade.findGalleryByName(name);
-        return ResponseEntity.ok(response);
-    }
-
-    @PutMapping("/{name}")
-    public ResponseEntity<Void> updateGallery(@PathVariable String name, @Valid @RequestBody GalleryUpdateRequest request) {
-        galleryFacade.updateGallery(name, request);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{name}")
-    public ResponseEntity<Void> deleteGallery(@PathVariable String name) {
-        galleryFacade.deleteGallery(name);
-        return ResponseEntity.noContent().build();
-    }
 }

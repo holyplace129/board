@@ -3,6 +3,7 @@ package org.learn.board.domain.post.domain;
 import jakarta.persistence.*;
 import jakarta.validation.groups.Default;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.ColumnDefault;
@@ -31,7 +32,8 @@ public class Post extends BaseTimeEntity {
     @Column(nullable = false)
     private String content;
 
-    @Column(length = 30, columnDefinition = "ㅇㅇ", nullable = false)
+    @Column(length = 30, nullable = false)
+    @ColumnDefault("'ㅇㅇ'")
     private String writer;
 
     @Column(nullable = false)
@@ -49,11 +51,12 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private int reportCount = 0;
 
+    @Builder
     public Post(Gallery gallery, String title, String content, String writer, String password, int viewCount, int likeCount, int dislikeCount, int reportCount) {
         this.gallery = gallery;
         this.title = title;
         this.content = content;
-        this.writer = writer;
+        this.writer = (writer != null) ? writer : "ㅇㅇ";
         this.password = password;
         this.viewCount = 0;
         this.likeCount = 0;

@@ -12,18 +12,24 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
         show_sql: true
+    defer-datasource-initialization: true
 
-    # H2
-    h2:
-      console:
-        enabled: true
-        # h2-console 접속 경로 설정 (옵션)
-        path: /h2-console
+  # H2
+  h2:
+    console:
+      enabled: true
+      # h2-console 접속 경로 설정 (옵션)
+      path: /h2-console
+
+  sql:
+    init:
+      mode: always
+
 
 
 server:

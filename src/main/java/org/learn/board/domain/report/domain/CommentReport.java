@@ -11,7 +11,7 @@ import org.learn.board.global.domain.BaseTimeEntity;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(uniqueConstraints = {
-        @UniqueConstraint(name = "uk_post_report", columnNames = {"post_id", "reporterIp"})
+        @UniqueConstraint(name = "uk_comment_report", columnNames = {"comment_id", "reporterIp"})
 })
 @Entity
 public class CommentReport extends BaseTimeEntity {

@@ -31,7 +31,8 @@ public class Comment extends BaseTimeEntity {
     @Column(length = 1000, nullable = false)
     private String content;
 
-    @Column(length = 30, columnDefinition = "ㅇㅇ", nullable = false)
+    @Column(length = 30, nullable = false)
+    @ColumnDefault("'ㅇㅇ'")
     private String writer;
 
     @Column(nullable = false)
@@ -43,11 +44,12 @@ public class Comment extends BaseTimeEntity {
     @ColumnDefault("0")
     private int reportCount;
 
+    @Builder
     public Comment(Post post, Comment parent, String content, String writer, String password, int likeCount, int reportCount) {
         this.post = post;
         this.parent = parent;
         this.content = content;
-        this.writer = writer;
+        this.writer = (writer != null) ? writer : "ㅇㅇ";
         this.password = password;
         this.likeCount = 0;
         this.reportCount = 0;
