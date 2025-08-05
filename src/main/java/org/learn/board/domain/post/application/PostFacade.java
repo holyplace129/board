@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +24,7 @@ public class PostFacade {
     private final PasswordEncoder passwordEncoder;
 
     // 게시글 생성
+    @Transactional
     public PostDetailResponse createPost(String galleryName, PostCreateRequest request) {
         Gallery gallery = galleryRepository.findByName(galleryName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 갤러리 입니다."));
@@ -34,7 +36,7 @@ public class PostFacade {
                 .title(request.getTitle())
                 .content(request.getContent())
                 .writer(request.getWriter())
-                .password(request.getPassword())
+                .password(encryptedPassword)
                 .build();
 
         Post savePost = postRepository.save(post);
@@ -43,12 +45,14 @@ public class PostFacade {
     }
 
     // 게시글 전체 목록 조회
+    @Transactional(readOnly = true)
     public Page<PostListResponse> findAllPosts(Pageable pageable) {
         Page<Post> posts = postRepository.findAll(pageable);
         return posts.map(this::toListResponse);
     }
 
     // 갤러리 내 게시글 목록
+    @Transactional(readOnly = true)
     public Page<PostListResponse> findPostsByGallery(String galleryName, Pageable pageable) {
         Gallery gallery = galleryRepository.findByName(galleryName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 갤러리입니다."));
@@ -59,6 +63,7 @@ public class PostFacade {
     }
 
     // 게시글 상세 조회
+    @Transactional(readOnly = true)
     public PostDetailResponse findPostById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
@@ -69,6 +74,7 @@ public class PostFacade {
     }
 
     // 게시글 수정
+    @Transactional
     public void updatePost(Long postId, PostUpdateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
@@ -81,6 +87,7 @@ public class PostFacade {
     }
 
     // 게시글 삭제
+    @Transactional
     public void deletePost(Long postId, String password) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));

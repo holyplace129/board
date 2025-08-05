@@ -10,6 +10,7 @@ import org.learn.board.domain.post.domain.Post;
 import org.learn.board.domain.post.domain.repository.PostRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class CommentFacade {
     private final PasswordEncoder passwordEncoder;
 
     // 댓글 생성
+    @Transactional
     public void createComment(Long postId, CommentCreateRequest request) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
@@ -49,6 +51,7 @@ public class CommentFacade {
     }
 
     // 게시글 내 댓글 조회
+    @Transactional(readOnly = true)
     public List<CommentResponse> findCommentByPost(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
@@ -59,6 +62,7 @@ public class CommentFacade {
     }
 
     // 댓글 수정
+    @Transactional
     public void updateComment(Long commentId, CommentUpdateRequest request) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
@@ -71,6 +75,7 @@ public class CommentFacade {
     }
 
     // 댓글 삭제
+    @Transactional
     public void deleteComment(Long commentId, String password) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
@@ -106,9 +111,11 @@ public class CommentFacade {
     private CommentResponse toResponse(Comment comment) {
         CommentResponse response = new CommentResponse();
         response.setId(comment.getId());
-        if (comment.getPassword() != null) {
+
+        if (comment.getParent() != null) {
             response.setParentId(comment.getParent().getId());
         }
+
         response.setContent(comment.getContent());
         response.setWriter(comment.getWriter());
         response.setLikeCount(comment.getLikeCount());

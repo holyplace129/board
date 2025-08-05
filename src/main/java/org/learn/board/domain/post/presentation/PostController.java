@@ -70,7 +70,7 @@ public class PostController {
     }
 
     // 게시글 삭제
-    @DeleteMapping("/{postId")
+    @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deletePost(
             @PathVariable String galleryName,
             @PathVariable Long postId,
