@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
 @Setter
@@ -24,4 +26,6 @@ public class PostCreateRequest {
 
     @NotBlank(message = "비밀번호는 필수입니다.")
     private String password;
+
+    private List<String> imageUrl;
 }

@@ -43,7 +43,7 @@ public class VoteFacade {
         post.increaseLikeCount();
     }
 
-    // 개사글 비추천
+    // 게시글 비추천
     @Transactional
     public void dislikePost(Long postId, String voterIp) {
         Post post = postRepository.findById(postId)

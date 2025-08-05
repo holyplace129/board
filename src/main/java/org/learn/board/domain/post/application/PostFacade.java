@@ -8,6 +8,7 @@ import org.learn.board.domain.post.application.dto.PostDetailResponse;
 import org.learn.board.domain.post.application.dto.PostListResponse;
 import org.learn.board.domain.post.application.dto.PostUpdateRequest;
 import org.learn.board.domain.post.domain.Post;
+import org.learn.board.domain.post.domain.PostImage;
 import org.learn.board.domain.post.domain.repository.PostRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,6 +39,16 @@ public class PostFacade {
                 .writer(request.getWriter())
                 .password(encryptedPassword)
                 .build();
+
+        if (request.getImageUrl() != null && !request.getImageUrl().isEmpty()) {
+            request.getImageUrl().forEach(imageUrl -> {
+                PostImage postImage = PostImage.builder()
+                        .post(post)
+                        .fileUrl(imageUrl)
+                        .build();
+                post.addImage(postImage);
+            });
+        }
 
         Post savePost = postRepository.save(post);
 

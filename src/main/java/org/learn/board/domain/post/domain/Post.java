@@ -12,6 +12,9 @@ import org.learn.board.global.domain.BaseTimeEntity;
 import org.springframework.boot.context.properties.bind.DefaultValue;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
@@ -51,6 +54,9 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private int reportCount = 0;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PostImage> images = new ArrayList<>();
+
     @Builder
     public Post(Gallery gallery, String title, String content, String writer, String password, int viewCount, int likeCount, int dislikeCount, int reportCount) {
         this.gallery = gallery;
@@ -87,5 +93,9 @@ public class Post extends BaseTimeEntity {
 
     public boolean isPasswordMatches(String rawPassword, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(rawPassword, this.password);
+    }
+
+    public void addImage(PostImage image) {
+        this.images.add(image);
     }
 }

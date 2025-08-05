@@ -33,4 +33,12 @@ public class PostImage extends BaseTimeEntity {
     @Column(nullable = false)
     private int sortOrder;
 
+    @Builder
+    public PostImage(Post post, String fileUrl, String originalFileName, Integer fileSizeKb, int sortOrder) {
+        this.post = post;
+        this.fileUrl = fileUrl;
+        this.originalFileName = originalFileName;
+        this.fileSizeKb = fileSizeKb;
+        this.sortOrder = sortOrder;
+    }
 }
