@@ -11,10 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -28,23 +24,14 @@ public class SearchFacade {
             return Page.empty();
         }
 
-        Page<Post> posts;
-        switch (searchRequest.getType()) {
-            case TITLE:
-                posts = postRepository.findByTitleContaining(searchRequest.getKeyword(), pageable);
-                break;
-            case CONTENT:
-                posts = postRepository.findByContentContaining(searchRequest.getKeyword(), pageable);
-                break;
-            case WRITER:
-                posts = postRepository.findByWriter(searchRequest.getKeyword(), pageable);
-                break;
-            case TITLE_CONTENT:
-                posts = postRepository.findByTitleContainingOrContentContaining(searchRequest.getKeyword(), pageable);
-                break;
-            default:
-                throw new IllegalArgumentException("유효하지 않은 검색 타입입니다: " + searchRequest.getType());
-        }
+        Page<Post> posts = switch (searchRequest.getType()) {
+            case TITLE -> postRepository.findByTitleContaining(searchRequest.getKeyword(), pageable);
+            case CONTENT -> postRepository.findByContentContaining(searchRequest.getKeyword(), pageable);
+            case WRITER -> postRepository.findByWriter(searchRequest.getKeyword(), pageable);
+            case TITLE_CONTENT ->
+                    postRepository.findByTitleContainingOrContentContaining(searchRequest.getKeyword(), pageable);
+            default -> throw new IllegalArgumentException("유효하지 않은 검색 타입입니다: " + searchRequest.getType());
+        };
 
         return posts.map(postMapper::toListResponse);
     }
