@@ -32,15 +32,6 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.CREATED).body(responsePost);
     }
 
-    // 게시글 전제 조회
-    @GetMapping("/posts")
-    public ResponseEntity<Page<PostListResponse>> findAllPosts(
-            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostListResponse> responses = postFacade.findAllPosts(pageable);
-        return ResponseEntity.ok(responses);
-    }
-
-
     // 갤러리 내 게시글 목록
     @GetMapping
     public ResponseEntity<Page<PostListResponse>> findPostByGallery(

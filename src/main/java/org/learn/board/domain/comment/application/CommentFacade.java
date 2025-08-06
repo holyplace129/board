@@ -48,6 +48,7 @@ public class CommentFacade {
                 .build();
 
         commentRepository.save(comment);
+        post.increaseCommentCount();
     }
 
     // 게시글 내 댓글 조회
@@ -85,6 +86,7 @@ public class CommentFacade {
         }
 
         commentRepository.delete(comment);
+        comment.getPost().decreaseCommentCount();
     }
 
     // 댓글 계층 구조

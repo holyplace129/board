@@ -10,11 +10,16 @@ import org.learn.board.domain.post.application.dto.PostUpdateRequest;
 import org.learn.board.domain.post.domain.Post;
 import org.learn.board.domain.post.domain.PostImage;
 import org.learn.board.domain.post.domain.repository.PostRepository;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Service
 @RequiredArgsConstructor
@@ -131,7 +136,21 @@ public class PostFacade {
         response.setWriter(post.getWriter());
         response.setViewCount(post.getViewCount());
         response.setLikeCount(post.getLikeCount());
-        response.setCreatedAt(post.getCreatedAt());
+        response.setCommentCount(post.getCommentCount());
+        response.setCreatedAt(formatCreatedAt(post.getCreatedAt()));
         return response;
+    }
+
+    private String formatCreatedAt(LocalDateTime createdAt) {
+        LocalDate today = LocalDate.now();
+        LocalDate createDate = createdAt.toLocalDate();
+
+        if (createDate.isEqual(today)) {
+            return createdAt.format(DateTimeFormatter.ofPattern("HH:mm"));
+        } else if (createDate.getYear() == today.getYear()) {
+            return createdAt.format(DateTimeFormatter.ofPattern("MM.dd"));
+        } else {
+            return createdAt.format(DateTimeFormatter.ofPattern("yy.MM.dd"));
+        }
     }
 }

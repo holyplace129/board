@@ -15,6 +15,7 @@ public class PostListResponse {
     private String writer;
     private int viewCount;
     private int likeCount;
-    private LocalDateTime createdAt;
+    private String createdAt;
+    private int commentCount;
     // 참고: content와 같은 무거운 데이터는 목록 조회 시 제외하여 성능을 최적화합니다.
 }

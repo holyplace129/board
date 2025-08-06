@@ -54,8 +54,13 @@ public class Post extends BaseTimeEntity {
     @ColumnDefault("0")
     private int reportCount = 0;
 
+    @ColumnDefault("0")
+    private int commentCount = 0;
+
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> images = new ArrayList<>();
+
+
 
     @Builder
     public Post(Gallery gallery, String title, String content, String writer, String password, int viewCount, int likeCount, int dislikeCount, int reportCount) {
@@ -91,8 +96,16 @@ public class Post extends BaseTimeEntity {
         this.reportCount++;
     }
 
+    public void increaseCommentCount() {this.commentCount++;}
+
     public boolean isPasswordMatches(String rawPassword, PasswordEncoder passwordEncoder) {
         return passwordEncoder.matches(rawPassword, this.password);
+    }
+
+    public void decreaseCommentCount() {
+        if (this.commentCount > 0) {
+            this.commentCount--;
+        }
     }
 
     public void addImage(PostImage image) {
