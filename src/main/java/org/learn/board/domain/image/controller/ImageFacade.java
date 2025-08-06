@@ -1,5 +1,7 @@
 package org.learn.board.domain.image.controller;
 
+import org.learn.board.global.error.ErrorCode;
+import org.learn.board.global.error.exception.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +18,7 @@ public class ImageFacade {
 
     public String uploadImage(MultipartFile file) throws IOException {
         if (file.isEmpty()) {
-            throw new IllegalArgumentException("업로드할 파일이 비어있습니다.");
+            throw new EntityNotFoundException(ErrorCode.INVALID_INPUT_VALUE);
         }
 
         // 1. 원본 파일명 및 확장자 추출

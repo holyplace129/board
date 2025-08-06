@@ -9,12 +9,14 @@ import org.learn.board.domain.vote.domain.CommentVote;
 import org.learn.board.domain.vote.domain.PostVote;
 import org.learn.board.domain.vote.domain.repository.CommentVoteRepository;
 import org.learn.board.domain.vote.domain.repository.PostVoteRepository;
+import org.learn.board.global.error.ErrorCode;
+import org.learn.board.global.error.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class VoteFacade {
 
     private final PostRepository postRepository;
@@ -24,13 +26,12 @@ public class VoteFacade {
 
 
     // 게시글 추천
-    @Transactional
     public void likePost(Long postId, String voterIp) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
 
         postVoteRepository.findByPostAndVoterIp(post, voterIp).ifPresent(v -> {
-            throw new IllegalArgumentException("이미 추천/비추천 한 게시글입니다.");
+            throw new EntityNotFoundException(ErrorCode.ALREADY_VOTED);
         });
 
         PostVote postVote = PostVote.builder()
@@ -44,13 +45,12 @@ public class VoteFacade {
     }
 
     // 게시글 비추천
-    @Transactional
     public void dislikePost(Long postId, String voterIp) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
 
         postVoteRepository.findByPostAndVoterIp(post, voterIp).ifPresent(v -> {
-            throw new IllegalArgumentException("이미 추천/비추천한 게시글입니다.");
+            throw new EntityNotFoundException(ErrorCode.ALREADY_VOTED);
         });
 
         PostVote postVote = PostVote.builder()
@@ -63,13 +63,13 @@ public class VoteFacade {
         post.increaseDislikeCount();
     }
 
-    @Transactional
+    // 댓글 추천
     public void likeComment(Long commentId, String voterIp) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         commentVoteRepository.findByCommentAndVoterIp(comment, voterIp).ifPresent(v -> {
-            throw new IllegalArgumentException("이미 추천한 게시글입니다.");
+            throw new EntityNotFoundException(ErrorCode.ALREADY_VOTED);
         });
 
         CommentVote commentVote = CommentVote.builder()

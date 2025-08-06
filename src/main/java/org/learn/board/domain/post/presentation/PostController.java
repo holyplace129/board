@@ -77,6 +77,7 @@ public class PostController {
             @PathVariable String galleryName,
             @PathVariable Long postId) {
         PostDetailResponse response = postQueryFacade.findPostById(postId);
+        postFacade.increaseViewCount(postId);
         return ResponseEntity.ok(response);
     }
 }

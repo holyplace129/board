@@ -10,10 +10,13 @@ import org.learn.board.domain.report.domain.CommentReport;
 import org.learn.board.domain.report.domain.PostReport;
 import org.learn.board.domain.report.domain.repository.CommentReportRepository;
 import org.learn.board.domain.report.domain.repository.PostReportRepository;
+import org.learn.board.global.error.ErrorCode;
+import org.learn.board.global.error.exception.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ReportFacade {
 
@@ -23,13 +26,12 @@ public class ReportFacade {
     private final CommentReportRepository commentReportRepository;
 
     // 게시글 신고
-    @Transactional
     public void reportPost(Long postId, String reporterIp, ReportCreateRequest request) {
         Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글 입니다."));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.POST_NOT_FOUND));
 
         postReportRepository.findByPostAndReporterIp(post, reporterIp).ifPresent(r -> {
-            throw new IllegalArgumentException("이미 신고한 게시글입니다.");
+            throw new EntityNotFoundException(ErrorCode.ALREADY_REPORTED);
         });
 
         PostReport postReport = PostReport.builder()
@@ -44,13 +46,12 @@ public class ReportFacade {
     }
 
     // 댓글 신고
-    @Transactional
     public void reportComment(Long commentId, String reporterIp, ReportCreateRequest request) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 댓글입니다."));
+                .orElseThrow(() -> new EntityNotFoundException(ErrorCode.COMMENT_NOT_FOUND));
 
         commentReportRepository.findByCommentAndReporterIp(comment, reporterIp).ifPresent(r -> {
-            throw new IllegalArgumentException("이미 신고한 댓글입니다.");
+            throw new EntityNotFoundException(ErrorCode.ALREADY_REPORTED);
         });
 
         CommentReport commentReport = CommentReport.builder()
