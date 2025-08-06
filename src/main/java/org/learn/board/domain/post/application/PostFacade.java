@@ -10,7 +10,6 @@ import org.learn.board.domain.post.application.dto.PostUpdateRequest;
 import org.learn.board.domain.post.domain.Post;
 import org.learn.board.domain.post.domain.PostImage;
 import org.learn.board.domain.post.domain.repository.PostRepository;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
