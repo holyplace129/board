@@ -7,6 +7,7 @@ import org.learn.board.domain.post.application.dto.PostCreateRequest;
 import org.learn.board.domain.post.application.dto.PostDetailResponse;
 import org.learn.board.domain.post.application.dto.PostListResponse;
 import org.learn.board.domain.post.application.dto.PostUpdateRequest;
+import org.learn.board.domain.post.application.mapper.PostMapper;
 import org.learn.board.domain.post.domain.Post;
 import org.learn.board.domain.post.domain.PostImage;
 import org.learn.board.domain.post.domain.repository.PostRepository;
@@ -21,12 +22,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class PostFacade {
 
     private final PostRepository postRepository;
     private final GalleryRepository galleryRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PostMapper postMapper;
 
     // 게시글 생성
     @Transactional
@@ -56,37 +59,10 @@ public class PostFacade {
 
         Post savePost = postRepository.save(post);
 
-        return toDetailResponse(savePost);
+        return postMapper.toDetailResponse(savePost);
     }
 
-    // 게시글 전체 목록 조회
-    @Transactional(readOnly = true)
-    public Page<PostListResponse> findAllPosts(Pageable pageable) {
-        Page<Post> posts = postRepository.findAll(pageable);
-        return posts.map(this::toListResponse);
-    }
 
-    // 갤러리 내 게시글 목록
-    @Transactional(readOnly = true)
-    public Page<PostListResponse> findPostsByGallery(String galleryName, Pageable pageable) {
-        Gallery gallery = galleryRepository.findByName(galleryName)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 갤러리입니다."));
-
-        Page<Post> posts = postRepository.findByGallery(gallery, pageable);
-
-        return posts.map(this::toListResponse);
-    }
-
-    // 게시글 상세 조회
-    @Transactional(readOnly = true)
-    public PostDetailResponse findPostById(Long postId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
-
-        post.increaseViewCount();
-
-        return toDetailResponse(post);
-    }
 
     // 게시글 수정
     @Transactional
@@ -114,42 +90,9 @@ public class PostFacade {
         postRepository.delete(post);
     }
 
-    private PostDetailResponse toDetailResponse(Post post) {
-        PostDetailResponse response = new PostDetailResponse();
-        response.setId(post.getId());
-        response.setTitle(post.getTitle());
-        response.setContent(post.getContent());
-        response.setWriter(post.getWriter());
-        response.setViewCount(post.getViewCount());
-        response.setLikeCount(post.getLikeCount());
-        response.setDislikeCount(post.getDislikeCount());
-        response.setCreatedAt(post.getCreatedAt());
-        response.setUpdatedAt(post.getUpdatedAt());
-        return response;
-    }
-
-    private PostListResponse toListResponse(Post post) {
-        PostListResponse response = new PostListResponse();
-        response.setId(post.getId());
-        response.setTitle(post.getTitle());
-        response.setWriter(post.getWriter());
-        response.setViewCount(post.getViewCount());
-        response.setLikeCount(post.getLikeCount());
-        response.setCommentCount(post.getCommentCount());
-        response.setCreatedAt(formatCreatedAt(post.getCreatedAt()));
-        return response;
-    }
-
-    private String formatCreatedAt(LocalDateTime createdAt) {
-        LocalDate today = LocalDate.now();
-        LocalDate createDate = createdAt.toLocalDate();
-
-        if (createDate.isEqual(today)) {
-            return createdAt.format(DateTimeFormatter.ofPattern("HH:mm"));
-        } else if (createDate.getYear() == today.getYear()) {
-            return createdAt.format(DateTimeFormatter.ofPattern("MM.dd"));
-        } else {
-            return createdAt.format(DateTimeFormatter.ofPattern("yy.MM.dd"));
-        }
+    public void increaseViewCount(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
+        post.increaseViewCount();
     }
 }

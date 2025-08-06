@@ -3,6 +3,7 @@ package org.learn.board.domain.post.presentation;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.learn.board.domain.post.application.PostFacade;
+import org.learn.board.domain.post.application.PostQueryFacade;
 import org.learn.board.domain.post.application.dto.PostCreateRequest;
 import org.learn.board.domain.post.application.dto.PostDetailResponse;
 import org.learn.board.domain.post.application.dto.PostListResponse;
@@ -23,6 +24,9 @@ import java.util.Map;
 public class PostController {
 
     private final PostFacade postFacade;
+    private final PostQueryFacade postQueryFacade;
+
+    // --- 쓰기 ---
 
     // 게시글 작성
     @PostMapping
@@ -30,24 +34,6 @@ public class PostController {
             @PathVariable String galleryName, @Valid @RequestBody PostCreateRequest request) {
         PostDetailResponse responsePost = postFacade.createPost(galleryName, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(responsePost);
-    }
-
-    // 갤러리 내 게시글 목록
-    @GetMapping
-    public ResponseEntity<Page<PostListResponse>> findPostByGallery(
-            @PathVariable String galleryName,
-            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostListResponse> responses = postFacade.findPostsByGallery(galleryName, pageable);
-        return ResponseEntity.ok(responses);
-    }
-
-    // 게시글 상세 조회
-    @GetMapping("/{postId}")
-    public ResponseEntity<PostDetailResponse> findPostById(
-            @PathVariable String galleryName,
-            @PathVariable Long postId) {
-        PostDetailResponse response = postFacade.findPostById(postId);
-        return ResponseEntity.ok(response);
     }
 
     // 게시글 수정
@@ -72,5 +58,25 @@ public class PostController {
         }
         postFacade.deletePost(postId, password);
         return ResponseEntity.noContent().build();
+    }
+
+    // --- 읽기 ---
+
+    // 갤러리 내 게시글 목록
+    @GetMapping
+    public ResponseEntity<Page<PostListResponse>> findPostByGallery(
+            @PathVariable String galleryName,
+            @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<PostListResponse> responses = postQueryFacade.findPostsByGallery(galleryName, pageable);
+        return ResponseEntity.ok(responses);
+    }
+
+    // 게시글 상세 조회
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDetailResponse> findPostById(
+            @PathVariable String galleryName,
+            @PathVariable Long postId) {
+        PostDetailResponse response = postQueryFacade.findPostById(postId);
+        return ResponseEntity.ok(response);
     }
 }

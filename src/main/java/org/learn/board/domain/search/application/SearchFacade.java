@@ -2,6 +2,7 @@ package org.learn.board.domain.search.application;
 
 import lombok.RequiredArgsConstructor;
 import org.learn.board.domain.post.application.dto.PostListResponse;
+import org.learn.board.domain.post.application.mapper.PostMapper;
 import org.learn.board.domain.post.domain.Post;
 import org.learn.board.domain.post.domain.repository.PostRepository;
 import org.learn.board.domain.search.application.dto.SearchRequest;
@@ -20,6 +21,7 @@ import java.time.format.DateTimeFormatter;
 public class SearchFacade {
 
     private final PostRepository postRepository;
+    private final PostMapper postMapper;
 
     public Page<PostListResponse> searchPosts(SearchRequest searchRequest, Pageable pageable) {
         if (searchRequest.getKeyword() == null || searchRequest.getKeyword().isBlank()) {
@@ -44,31 +46,7 @@ public class SearchFacade {
                 throw new IllegalArgumentException("유효하지 않은 검색 타입입니다: " + searchRequest.getType());
         }
 
-        return posts.map(this::toListResponse);
+        return posts.map(postMapper::toListResponse);
     }
 
-    private PostListResponse toListResponse(Post post) {
-        PostListResponse response = new PostListResponse();
-        response.setId(post.getId());
-        response.setTitle(post.getTitle());
-        response.setWriter(post.getWriter());
-        response.setViewCount(post.getViewCount());
-        response.setLikeCount(post.getLikeCount());
-        response.setCommentCount(post.getCommentCount());
-        response.setCreatedAt(formatCreatedAt(post.getCreatedAt()));
-        return response;
-    }
-
-    private String formatCreatedAt(LocalDateTime createdAt) {
-        LocalDate today = LocalDate.now();
-        LocalDate createDate = createdAt.toLocalDate();
-
-        if (createDate.isEqual(today)) {
-            return createdAt.format(DateTimeFormatter.ofPattern("HH:mm"));
-        } else if (createDate.getYear() == today.getYear()) {
-            return createdAt.format(DateTimeFormatter.ofPattern("MM.dd"));
-        } else {
-            return createdAt.format(DateTimeFormatter.ofPattern("yy.MM.dd"));
-        }
-    }
 }
