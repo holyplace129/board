@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.learn.board.domain.post.application.PostFacade;
 import org.learn.board.domain.post.application.PostQueryFacade;
 import org.learn.board.domain.post.application.dto.PostListResponse;
+import org.learn.board.global.common.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -20,12 +21,11 @@ public class TotalPostController {
 
     private final PostQueryFacade postQueryFacade;
 
-
     // 전체 게시글 목록 조회
     @GetMapping
-    public ResponseEntity<Page<PostListResponse>> findAllPosts(
+    public ResponseEntity<PageResponse<PostListResponse>> findAllPosts(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostListResponse> responses = postQueryFacade.findAllPosts(pageable);
+        PageResponse<PostListResponse> responses = postQueryFacade.findAllPosts(pageable);
         return ResponseEntity.ok(responses);
     }
 }

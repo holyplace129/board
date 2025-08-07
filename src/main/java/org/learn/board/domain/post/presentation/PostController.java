@@ -8,6 +8,7 @@ import org.learn.board.domain.post.application.dto.PostCreateRequest;
 import org.learn.board.domain.post.application.dto.PostDetailResponse;
 import org.learn.board.domain.post.application.dto.PostListResponse;
 import org.learn.board.domain.post.application.dto.PostUpdateRequest;
+import org.learn.board.global.common.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -64,10 +65,10 @@ public class PostController {
 
     // 갤러리 내 게시글 목록
     @GetMapping
-    public ResponseEntity<Page<PostListResponse>> findPostByGallery(
+    public ResponseEntity<PageResponse<PostListResponse>> findPostByGallery(
             @PathVariable String galleryName,
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<PostListResponse> responses = postQueryFacade.findPostsByGallery(galleryName, pageable);
+        PageResponse<PostListResponse> responses = postQueryFacade.findPostsByGallery(galleryName, pageable);
         return ResponseEntity.ok(responses);
     }
 
