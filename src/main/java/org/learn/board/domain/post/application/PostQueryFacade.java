@@ -43,6 +43,7 @@ public class PostQueryFacade {
     }
 
     // 게시글 상세 조회
+    @Cacheable(value = "postDetail", key = "#postId")
     public PostDetailResponse findPostById(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
