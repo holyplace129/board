@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -80,5 +81,12 @@ public class PostController {
         PostDetailResponse response = postQueryFacade.findPostById(postId);
         postFacade.increaseViewCount(postId);
         return ResponseEntity.ok(response);
+    }
+
+    // 갤러리별 인기 게시글
+    @GetMapping("/popular")
+    public ResponseEntity<List<PostListResponse>> findGalleryPopularPosts(@PathVariable String galleryName) {
+        List<PostListResponse> responses = postQueryFacade.findGalleryPopularPosts(galleryName);
+        return ResponseEntity.ok(responses);
     }
 }

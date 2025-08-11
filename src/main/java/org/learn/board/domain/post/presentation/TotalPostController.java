@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/posts")
@@ -26,6 +28,13 @@ public class TotalPostController {
     public ResponseEntity<PageResponse<PostListResponse>> findAllPosts(
             @PageableDefault(size = 20, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         PageResponse<PostListResponse> responses = postQueryFacade.findAllPosts(pageable);
+        return ResponseEntity.ok(responses);
+    }
+
+    // 전체 인기 게시글
+    @GetMapping("/popular")
+    public ResponseEntity<List<PostListResponse>> findTotalPopularPosts() {
+        List<PostListResponse> responses = postQueryFacade.findTotalPopularPosts();
         return ResponseEntity.ok(responses);
     }
 }
